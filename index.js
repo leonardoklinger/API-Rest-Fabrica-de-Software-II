@@ -1,3 +1,4 @@
+require("dotenv").config()
 const { ServidorApp } = require("./src/config/app")
 
 class Servidor extends ServidorApp {

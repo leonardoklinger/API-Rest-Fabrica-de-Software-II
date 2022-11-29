@@ -1,61 +1,20 @@
-/* const sqlite3 = require("sqlite3")
-const caminhoDB = "./src/config/DB/bancoDeDados.db"
+const mysql = require("mysql2")
+const connection = mysql.createConnection(process.env.DATABASE_URL)
 
-class db {
-    constructor() {
-        this.db = new sqlite3.Database(caminhoDB, (err) => {
-            if (err) {
-                console.log("Banco de Dados desconectado", err)
-            } else {
-                console.log("Banco de Dados conectado")
-            }
-        })
-    }
+connection.connect((err) => {
+    if (err) return console.log(err);
+    console.log('conectou!');
+})
 
-    query = (query, params) => {
-        return new Promise((resolve, reject) => {
-            this.db.all(query, params, (err, rows) => {
-                if (err) {
-                    reject(err)
-                }
-
-                resolve(rows)
-            })
-        }).finally(() => {
-            this.db.close()
-        })
-    }
-} */
-
-const sqlite3 = require("sqlite3")
-const caminhoDB = "./src/config/DB/bancoDeDados.db"
-
-exports.openConnection = () => {
-    let db = new sqlite3.Database(caminhoDB)
-    return db
-}
-
-exports.dbQuery = (query, params) => {
-    let db = this.openConnection();
+async function connect(query, params) {
     return new Promise((resolve, reject) => {
-
-        db.all(query, params, (err, rows) => {
-            if (err)
-                reject(err);
-            else
-                resolve(rows);
-        })
-
-    }).finally(() => {
-        db.close();
+        connection.query(query, params, (err, result) => {
+            if (err) return reject(err)
+            resolve(result)
+        });
     })
 }
 
-/* const db = () => {
-    return open({
-        filename: "./src/config/DB/bancoDeDados.db",
-        driver: sqlite3.Database
-    })
-} */
-
-/* module.exports = { db } */
+module.exports = {
+    connect
+}
